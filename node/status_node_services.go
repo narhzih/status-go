@@ -581,6 +581,7 @@ func (b *StatusNode) CallPrivateRPC(inputJSON string) (string, error) {
 		return "", ErrRPCClientUnavailable
 	}
 
+	b.log.Info("### node service callprivaterpc")
 	return b.rpcClient.CallRaw(inputJSON), nil
 }
 
