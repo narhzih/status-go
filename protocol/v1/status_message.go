@@ -274,6 +274,10 @@ func (m *StatusMessage) HandleApplication() error {
 		return m.unmarshalProtobufData(new(protobuf.SyncSetting))
 	case protobuf.ApplicationMetadataMessage_COMMUNITY_ARCHIVE_MAGNETLINK:
 		return m.unmarshalProtobufData(new(protobuf.CommunityMessageArchiveMagnetlink))
+	case protobuf.ApplicationMetadataMessage_ACCEPT_CONTACT_REQUEST:
+		return m.unmarshalProtobufData(new(protobuf.AcceptContactRequest))
+	case protobuf.ApplicationMetadataMessage_DECLINE_CONTACT_REQUEST:
+		return m.unmarshalProtobufData(new(protobuf.DeclineContactRequest))
 	}
 	return nil
 }
