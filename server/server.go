@@ -29,12 +29,14 @@ type Server struct {
 	cert     *tls.Certificate
 	netIP    net.IP
 	listener net.Listener
+	mode     ServerMode
 }
 
 type Config struct {
 	PK    *ecdsa.PrivateKey
 	Cert  *tls.Certificate
 	NetIP net.IP
+	Mode  ServerMode
 }
 
 // NewServer returns a *Server. If the config param is nil the default Server values are applied to the new Server
@@ -54,6 +56,7 @@ func NewServer(db *sql.DB, logger *zap.Logger, config *Config) (*Server, error) 
 		s.pk = config.PK
 		s.cert = config.Cert
 		s.netIP = config.NetIP
+		s.mode = config.Mode
 	}
 
 	return s, nil
@@ -181,7 +184,7 @@ func (s *Server) MakeConnectionParams() (*ConnectionParams, error) {
 		return nil, fmt.Errorf("port is 0, listener is not yet set")
 	}
 
-	return NewConnectionParams(s.netIP, p, s.pk, s.cert.Leaf.NotBefore), nil
+	return NewConnectionParams(s.netIP, p, s.pk, s.cert.Leaf.NotBefore, s.mode), nil
 }
 
 func (s *Server) MakeBaseURL() *url.URL {

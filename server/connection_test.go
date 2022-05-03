@@ -19,7 +19,7 @@ type ConnectionParamsSuite struct {
 	TestKeyComponents
 	TestCertComponents
 
-	server           *Server
+	server *Server
 }
 
 func (s *ConnectionParamsSuite) SetupSuite() {
@@ -37,6 +37,7 @@ func (s *ConnectionParamsSuite) SetupSuite() {
 		cert:     &cert,
 		netIP:    defaultIP,
 		listener: l,
+		mode:     Sending,
 	}
 }
 
@@ -48,16 +49,19 @@ func (s *ConnectionParamsSuite) TestConnectionParams_ToString() {
 	s.Require().NoError(err)
 
 	s.Require().Regexp(
-		"2:4FHRnp:[1-9|A-Z|a-z]{1,4}:6jpbvo2ucrtrnpXXF4DQYuysh697isH9ppd2aT8uSRDh:eQUriVtGtkWhPJFeLZjF",
+		"2:4FHRnp:[1-9|A-Z|a-z]{1,4}:6jpbvo2ucrtrnpXXF4DQYuysh697isH9ppd2aT8uSRDh:eQUriVtGtkWhPJFeLZjF:3",
 		cps)
 }
 
 func (s *ConnectionParamsSuite) TestConnectionParams_Generate() {
 	cp := new(ConnectionParams)
-	err := cp.FromString("2:4FHRnp:H6G:6jpbvo2ucrtrnpXXF4DQYuysh697isH9ppd2aT8uSRDh:eQUriVtGtkWhPJFeLZjF")
+	err := cp.FromString("2:4FHRnp:H6G:6jpbvo2ucrtrnpXXF4DQYuysh697isH9ppd2aT8uSRDh:eQUriVtGtkWhPJFeLZjF:3")
 	s.Require().NoError(err)
 
+	s.Require().Exactly(Sending, cp.serverMode)
+
 	u, c, err := cp.Generate()
+	s.Require().NoError(err)
 
 	s.Require().Equal("https://127.0.0.1:54129", u.String())
 	s.Require().Equal(defaultIP.String(), u.Hostname())
