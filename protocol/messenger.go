@@ -3634,6 +3634,7 @@ func (m *Messenger) handleRetrievedMessages(chatWithMessages map[transport.Filte
 							continue
 						}
                                               case protobuf.AcceptContactRequest:
+						logger.Debug("Handling AcceptContactRequest")
 						message := msg.ParsedMessage.Interface().(protobuf.AcceptContactRequest)
 						err = m.HandleAcceptContactRequest(messageState, message)
 						if err != nil {
@@ -3642,6 +3643,8 @@ func (m *Messenger) handleRetrievedMessages(chatWithMessages map[transport.Filte
 							continue
 						}
                                        case protobuf.RetractContactRequest:
+
+						logger.Debug("Handling RetractContactRequest")
 						message := msg.ParsedMessage.Interface().(protobuf.RetractContactRequest)
 						err = m.HandleRetractContactRequest(messageState, message)
 						if err != nil {

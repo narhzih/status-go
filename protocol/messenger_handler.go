@@ -605,6 +605,7 @@ func (m *Messenger) HandleAcceptContactRequest(state *ReceivedMessageState, mess
   contact := state.CurrentMessageState.Contact
 
   if contact.ContactRequestClock > message.Clock {
+    m.logger.Info("not handling accept since clock lower")
     return nil
   }
 
@@ -643,6 +644,7 @@ func (m *Messenger) HandleAcceptContactRequest(state *ReceivedMessageState, mess
 func (m *Messenger) HandleRetractContactRequest(state *ReceivedMessageState, message protobuf.RetractContactRequest) error {
   contact := state.CurrentMessageState.Contact
   if contact.ContactRequestClock > message.Clock {
+    m.logger.Info("not handling retract since clock lower")
     return nil
   }
 
@@ -1104,6 +1106,7 @@ func (m *Messenger) HandleChatMessage(state *ReceivedMessageState) error {
 
         if receivedMessage.ContentType == protobuf.ChatMessage_CONTACT_REQUEST {
           if contact.ContactRequestClock > receivedMessage.Clock {
+            m.logger.Info("not handling contact message since clock lower")
             return nil
           }
           receivedMessage.ContactRequestState = common.ContactRequestStatePending
