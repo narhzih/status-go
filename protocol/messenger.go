@@ -4053,7 +4053,7 @@ func (m *Messenger) MessageByChatID(chatID, cursor string, limit int) ([]*common
 
 	}
 	for idx := range msgs {
-		msgs[idx].PrepareServerURLs(m.httpServer)
+		m.prepareMessage(msgs[idx], m.httpServer)
 	}
 
 	return msgs, nextCursor, nil
@@ -4061,9 +4061,22 @@ func (m *Messenger) MessageByChatID(chatID, cursor string, limit int) ([]*common
 
 func (m *Messenger) prepareMessages(messages map[string]*common.Message) {
 	for idx := range messages {
-		messages[idx].PrepareServerURLs(m.httpServer)
+		m.prepareMessage(messages[idx], m.httpServer)
 	}
+}
 
+func (m *Messenger) prepareMessage(msg *common.Message, s *server.Server) {
+	msg.Identicon = s.MakeIdenticonURL(msg.From)
+
+	if msg.QuotedMessage != nil && msg.QuotedMessage.ContentType == int64(protobuf.ChatMessage_IMAGE) {
+		msg.QuotedMessage.ImageLocalURL = s.MakeImageURL(msg.QuotedMessage.ID)
+	}
+	if msg.ContentType == protobuf.ChatMessage_IMAGE {
+		msg.ImageLocalURL = s.MakeImageURL(msg.ID)
+	}
+	if msg.ContentType == protobuf.ChatMessage_AUDIO {
+		msg.AudioLocalURL = s.MakeAudioURL(msg.ID)
+	}
 }
 
 func (m *Messenger) AllMessageByChatIDWhichMatchTerm(chatID string, searchTerm string, caseSensitive bool) ([]*common.Message, error) {

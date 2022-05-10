@@ -1,10 +1,13 @@
 package server
 
 import (
+	"crypto/rand"
 	"testing"
 
 	"github.com/btcsuite/btcutil/base58"
 	"github.com/stretchr/testify/suite"
+
+	"github.com/status-im/status-go/protocol/common"
 )
 
 func TestCerts(t *testing.T) {
@@ -37,4 +40,16 @@ func (s *CertsSuite) TestToECDSA() {
 
 	b58 := base58.Encode(s.D.Bytes())
 	s.Require().Equal(DB58, b58)
+}
+
+func (s *CertsSuite) Test() {
+	text := []byte("I am a test")
+
+	cypher, err := common.Encrypt(text, s.PK.D.Bytes(), rand.Reader)
+	s.Require().NoError(err)
+	s.Require().NotEqual(text, cypher)
+
+	out, err := common.Decrypt(cypher, s.PK.D.Bytes())
+	s.Require().NoError(err)
+	s.Require().Equal(text, out)
 }
