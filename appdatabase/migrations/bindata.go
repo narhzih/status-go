@@ -401,7 +401,7 @@ func _1650612625_add_community_message_archive_hashes_tableUpSql() (*asset, erro
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "1650612625_add_community_message_archive_hashes_table.up.sql", size: 130, mode: os.FileMode(0664), modTime: time.Unix(1652164735, 0)}
+	info := bindataFileInfo{name: "1650612625_add_community_message_archive_hashes_table.up.sql", size: 130, mode: os.FileMode(0664), modTime: time.Unix(1652175194, 0)}
 	a := &asset{bytes: bytes, info: info, digest: [32]uint8{0x48, 0x31, 0xb3, 0x75, 0x23, 0xe2, 0x45, 0xe, 0x47, 0x1b, 0x35, 0xa5, 0x6e, 0x83, 0x4e, 0x64, 0x7d, 0xd7, 0xa2, 0xda, 0xe9, 0x53, 0xf1, 0x16, 0x86, 0x2c, 0x57, 0xad, 0xfa, 0xca, 0x39, 0xde}}
 	return a, nil
 }
@@ -421,7 +421,7 @@ func _1650616788_add_communities_archives_info_tableUpSql() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "1650616788_add_communities_archives_info_table.up.sql", size: 208, mode: os.FileMode(0664), modTime: time.Unix(1652164735, 0)}
+	info := bindataFileInfo{name: "1650616788_add_communities_archives_info_table.up.sql", size: 208, mode: os.FileMode(0664), modTime: time.Unix(1652175194, 0)}
 	a := &asset{bytes: bytes, info: info, digest: [32]uint8{0xd1, 0x4f, 0x80, 0x45, 0xb9, 0xd9, 0x15, 0xe2, 0x78, 0xd0, 0xcb, 0x71, 0xc1, 0x1b, 0xb7, 0x1b, 0x1b, 0x97, 0xfe, 0x47, 0x53, 0x3c, 0x62, 0xbc, 0xdd, 0x3a, 0x94, 0x1a, 0xc, 0x48, 0x76, 0xe}}
 	return a, nil
 }
