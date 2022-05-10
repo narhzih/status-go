@@ -4,8 +4,6 @@ go 1.18
 
 replace github.com/ethereum/go-ethereum v1.10.16 => github.com/status-im/go-ethereum v1.10.4-status.4
 
-replace github.com/Sirupsen/logrus v1.4.2 => github.com/sirupsen/logrus v1.4.2
-
 replace github.com/docker/docker => github.com/docker/engine v1.4.2-0.20190717161051-705d9623b7c1
 
 replace github.com/nfnt/resize => github.com/status-im/resize v0.0.0-20201215164250-7c6d9f0d3088
