@@ -507,20 +507,20 @@ func (db sqlitePersistence) Contacts() ([]*Contact, error) {
 	for rows.Next() {
 
 		var (
-			contact            Contact
-			nickname           sql.NullString
-                        contactRequestState sql.NullInt64
-                        contactRequestClock sql.NullInt64
-			displayName        sql.NullString
-			imageType          sql.NullString
-			ensName            sql.NullString
-			ensVerified        sql.NullBool
-			added              sql.NullBool
-			blocked            sql.NullBool
-			removed            sql.NullBool
-			hasAddedUs         sql.NullBool
-			lastUpdatedLocally sql.NullInt64
-			imagePayload       []byte
+			contact             Contact
+			nickname            sql.NullString
+			contactRequestState sql.NullInt64
+			contactRequestClock sql.NullInt64
+			displayName         sql.NullString
+			imageType           sql.NullString
+			ensName             sql.NullString
+			ensVerified         sql.NullBool
+			added               sql.NullBool
+			blocked             sql.NullBool
+			removed             sql.NullBool
+			hasAddedUs          sql.NullBool
+			lastUpdatedLocally  sql.NullInt64
+			imagePayload        []byte
 		)
 
 		contact.Images = make(map[string]images.IdentityImage)
@@ -540,8 +540,8 @@ func (db sqlitePersistence) Contacts() ([]*Contact, error) {
 			&removed,
 			&hasAddedUs,
 			&nickname,
-                        &contactRequestState,
-                        &contactRequestClock,
+			&contactRequestState,
+			&contactRequestClock,
 			&imageType,
 			&imagePayload,
 		)
@@ -761,8 +761,8 @@ func (db sqlitePersistence) SaveContact(contact *Contact, tx *sql.Tx) (err error
 		contact.LastUpdated,
 		contact.LastUpdatedLocally,
 		contact.LocalNickname,
-                contact.ContactRequestState,
-                contact.ContactRequestClock,
+		contact.ContactRequestState,
+		contact.ContactRequestClock,
 		contact.Added,
 		contact.Blocked,
 		contact.Removed,

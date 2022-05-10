@@ -228,16 +228,16 @@ func (m *Messenger) createMessageNotification(chat *Chat, messageState *Received
 }
 
 func (m *Messenger) createContactRequestNotification(contact *Contact, messageState *ReceivedMessageState, contactRequest *common.Message) {
-  m.logger.Info("IID", zap.Any("ID", contactRequest.ID))
+	m.logger.Info("IID", zap.Any("ID", contactRequest.ID))
 
 	notification := &ActivityCenterNotification{
-		ID:          types.FromHex(contactRequest.ID),
-		Name:        contact.CanonicalName(),
-		Message:     contactRequest,
-		Type:        ActivityCenterNotificationTypeContactRequest,
-		Author:      messageState.CurrentMessageState.Contact.ID,
-		Timestamp:   messageState.CurrentMessageState.WhisperTimestamp,
-		ChatID:      contact.ID,
+		ID:        types.FromHex(contactRequest.ID),
+		Name:      contact.CanonicalName(),
+		Message:   contactRequest,
+		Type:      ActivityCenterNotificationTypeContactRequest,
+		Author:    messageState.CurrentMessageState.Contact.ID,
+		Timestamp: messageState.CurrentMessageState.WhisperTimestamp,
+		ChatID:    contact.ID,
 	}
 
 	err := m.addActivityCenterNotification(messageState, notification)
@@ -601,61 +601,60 @@ func (m *Messenger) HandlePinMessage(state *ReceivedMessageState, message protob
 }
 
 func (m *Messenger) HandleAcceptContactRequest(state *ReceivedMessageState, message protobuf.AcceptContactRequest) error {
-  contact := state.CurrentMessageState.Contact
+	contact := state.CurrentMessageState.Contact
 
-  if contact.ContactRequestClock > message.Clock {
-    m.logger.Info("not handling accept since clock lower")
-    return nil
-  }
+	if contact.ContactRequestClock > message.Clock {
+		m.logger.Info("not handling accept since clock lower")
+		return nil
+	}
 
-  // TODO: Handle missing contact request message
-  request, err := m.persistence.MessageByID(message.Id)
-  if err != nil {
-    return err
-  }
+	// TODO: Handle missing contact request message
+	request, err := m.persistence.MessageByID(message.Id)
+	if err != nil {
+		return err
+	}
 
-  if request.LocalChatID != state.CurrentMessageState.Contact.ID {
-    return errors.New("can't accept contact request not sent to user")
-  }
+	if request.LocalChatID != state.CurrentMessageState.Contact.ID {
+		return errors.New("can't accept contact request not sent to user")
+	}
 
-  contact.ContactRequestClock = message.Clock
+	contact.ContactRequestClock = message.Clock
 
-  state.ModifiedContacts.Store(contact.ID, true)
-  state.AllContacts.Store(contact.ID, contact)
+	state.ModifiedContacts.Store(contact.ID, true)
+	state.AllContacts.Store(contact.ID, contact)
 
-  request.ContactRequestState = common.ContactRequestStateAccepted
+	request.ContactRequestState = common.ContactRequestStateAccepted
 
-  err = m.persistence.SetContactRequestState(request.ID, request.ContactRequestState)
-  if err != nil {
-    return err
-  }
+	err = m.persistence.SetContactRequestState(request.ID, request.ContactRequestState)
+	if err != nil {
+		return err
+	}
 
+	m.createContactRequestNotification(state.CurrentMessageState.Contact, state, request)
 
-   m.createContactRequestNotification(state.CurrentMessageState.Contact, state, request)
+	state.CurrentMessageState.Contact.ContactRequestAccepted()
 
-  state.CurrentMessageState.Contact.ContactRequestAccepted()
-
-  state.Response.AddMessage(request)
-  return nil
+	state.Response.AddMessage(request)
+	return nil
 
 }
 
 func (m *Messenger) HandleRetractContactRequest(state *ReceivedMessageState, message protobuf.RetractContactRequest) error {
-  contact := state.CurrentMessageState.Contact
-  if contact.ContactRequestClock > message.Clock {
-    m.logger.Info("not handling retract since clock lower")
-    return nil
-  }
+	contact := state.CurrentMessageState.Contact
+	if contact.ContactRequestClock > message.Clock {
+		m.logger.Info("not handling retract since clock lower")
+		return nil
+	}
 
-  contact.Added = false
-  contact.HasAddedUs = false
-  contact.ContactRequestClock = message.Clock
-  contact.ContactRequestRetracted()
-  state.ModifiedContacts.Store(contact.ID, true)
+	contact.Added = false
+	contact.HasAddedUs = false
+	contact.ContactRequestClock = message.Clock
+	contact.ContactRequestRetracted()
+	state.ModifiedContacts.Store(contact.ID, true)
 
-  state.AllContacts.Store(contact.ID, contact)
+	state.AllContacts.Store(contact.ID, contact)
 
-  return nil
+	return nil
 }
 
 func (m *Messenger) HandleContactUpdate(state *ReceivedMessageState, message protobuf.ContactUpdate) error {
@@ -1081,19 +1080,19 @@ func (m *Messenger) HandleChatMessage(state *ReceivedMessageState) error {
 
 	contact := state.CurrentMessageState.Contact
 
-        if receivedMessage.ContentType == protobuf.ChatMessage_CONTACT_REQUEST {
-          if contact.ContactRequestClock > receivedMessage.Clock {
-            m.logger.Info("not handling contact message since clock lower")
-            return nil
-          }
-          receivedMessage.ContactRequestState = common.ContactRequestStatePending
-          contact.ContactRequestClock = receivedMessage.Clock
-          contact.ContactRequestReceived()
-          state.ModifiedContacts.Store(contact.ID, true)
-          state.AllContacts.Store(contact.ID, contact)
-          m.createContactRequestNotification(state.CurrentMessageState.Contact, state, receivedMessage)
+	if receivedMessage.ContentType == protobuf.ChatMessage_CONTACT_REQUEST {
+		if contact.ContactRequestClock > receivedMessage.Clock {
+			m.logger.Info("not handling contact message since clock lower")
+			return nil
+		}
+		receivedMessage.ContactRequestState = common.ContactRequestStatePending
+		contact.ContactRequestClock = receivedMessage.Clock
+		contact.ContactRequestReceived()
+		state.ModifiedContacts.Store(contact.ID, true)
+		state.AllContacts.Store(contact.ID, contact)
+		m.createContactRequestNotification(state.CurrentMessageState.Contact, state, receivedMessage)
 
-        } else if receivedMessage.ContentType == protobuf.ChatMessage_COMMUNITY {
+	} else if receivedMessage.ContentType == protobuf.ChatMessage_COMMUNITY {
 		chat.Highlight = true
 	}
 
@@ -1125,10 +1124,10 @@ func (m *Messenger) HandleChatMessage(state *ReceivedMessageState) error {
 		}
 	}
 
-        // If the chat is not active, create a notification in the center
-        if !receivedMessage.Deleted && chat.OneToOne() && !chat.Active && receivedMessage.ContentType != protobuf.ChatMessage_CONTACT_REQUEST {
-          m.createMessageNotification(chat, state)
-        }
+	// If the chat is not active, create a notification in the center
+	if !receivedMessage.Deleted && chat.OneToOne() && !chat.Active && receivedMessage.ContentType != protobuf.ChatMessage_CONTACT_REQUEST {
+		m.createMessageNotification(chat, state)
+	}
 
 	// Set in the modified maps chat
 	state.Response.AddChat(chat)

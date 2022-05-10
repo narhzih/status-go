@@ -206,9 +206,9 @@ func (db sqlitePersistence) tableUserMessagesScanAllFields(row scanner, message 
 		message.Deleted = deleted.Bool
 	}
 
-        if contactRequestState.Valid {
-          message.ContactRequestState = common.ContactRequestState(contactRequestState.Int64)
-        }
+	if contactRequestState.Valid {
+		message.ContactRequestState = common.ContactRequestState(contactRequestState.Int64)
+	}
 
 	if quotedText.Valid {
 		message.QuotedMessage = &common.QuotedMessage{
@@ -2024,6 +2024,6 @@ func (db sqlitePersistence) clearHistoryFromSyncMessage(chat *Chat, clearedAt ui
 }
 
 func (db sqlitePersistence) SetContactRequestState(id string, state common.ContactRequestState) error {
-  _, err := db.db.Exec(`UPDATE user_messages SET contact_request_state = ? WHERE id = ?`, state, id)
-  return err
+	_, err := db.db.Exec(`UPDATE user_messages SET contact_request_state = ? WHERE id = ?`, state, id)
+	return err
 }

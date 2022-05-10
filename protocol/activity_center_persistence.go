@@ -117,71 +117,71 @@ func (db sqlitePersistence) SaveActivityCenterNotification(notification *Activit
 }
 
 func (db sqlitePersistence) unmarshalActivityCenterNotificationRow(row *sql.Row) (*ActivityCenterNotification, error) {
-		var chatID sql.NullString
-		var lastMessageBytes []byte
-		var messageBytes []byte
-		var replyMessageBytes []byte
-		var name sql.NullString
-		var author sql.NullString
-		notification := &ActivityCenterNotification{}
-		err := row.Scan(
-			&notification.ID,
-			&notification.Timestamp,
-			&notification.Type,
-			&chatID,
-			&notification.Read,
-			&notification.Accepted,
-			&notification.Dismissed,
-			&messageBytes,
-			&lastMessageBytes,
-			&replyMessageBytes,
-			&name,
-			&author,)
+	var chatID sql.NullString
+	var lastMessageBytes []byte
+	var messageBytes []byte
+	var replyMessageBytes []byte
+	var name sql.NullString
+	var author sql.NullString
+	notification := &ActivityCenterNotification{}
+	err := row.Scan(
+		&notification.ID,
+		&notification.Timestamp,
+		&notification.Type,
+		&chatID,
+		&notification.Read,
+		&notification.Accepted,
+		&notification.Dismissed,
+		&messageBytes,
+		&lastMessageBytes,
+		&replyMessageBytes,
+		&name,
+		&author)
 
-		if err != nil {
+	if err != nil {
+		return nil, err
+	}
+	if chatID.Valid {
+		notification.ChatID = chatID.String
+
+	}
+
+	if name.Valid {
+		notification.Name = name.String
+	}
+
+	if author.Valid {
+		notification.Author = author.String
+	}
+
+	// Restore last message
+	if lastMessageBytes != nil {
+		lastMessage := &common.Message{}
+		if err = json.Unmarshal(lastMessageBytes, lastMessage); err != nil {
 			return nil, err
 		}
-		if chatID.Valid {
-			notification.ChatID = chatID.String
+		notification.LastMessage = lastMessage
+	}
 
+	// Restore message
+	if messageBytes != nil {
+		message := &common.Message{}
+		if err = json.Unmarshal(messageBytes, message); err != nil {
+			return nil, err
 		}
+		notification.Message = message
+	}
 
-		if name.Valid {
-			notification.Name = name.String
+	// Restore reply message
+	if replyMessageBytes != nil {
+		replyMessage := &common.Message{}
+		if err = json.Unmarshal(replyMessageBytes, replyMessage); err != nil {
+			return nil, err
 		}
+		notification.ReplyMessage = replyMessage
+	}
 
-		if author.Valid {
-			notification.Author = author.String
-		}
-
-		// Restore last message
-		if lastMessageBytes != nil {
-			lastMessage := &common.Message{}
-			if err = json.Unmarshal(lastMessageBytes, lastMessage); err != nil {
-				return nil, err
-			}
-			notification.LastMessage = lastMessage
-		}
-
-		// Restore message
-		if messageBytes != nil {
-			message := &common.Message{}
-			if err = json.Unmarshal(messageBytes, message); err != nil {
-				return nil, err
-			}
-			notification.Message = message
-		}
-
-		// Restore reply message
-		if replyMessageBytes != nil {
-			replyMessage := &common.Message{}
-			if err = json.Unmarshal(replyMessageBytes, replyMessage); err != nil {
-				return nil, err
-			}
-			notification.ReplyMessage = replyMessage
-		}
-
-                return notification, nil
+	return notification, nil
 
 }
 
@@ -435,7 +435,7 @@ func (db sqlitePersistence) GetActivityCenterNotificationByID(id types.HexBytes)
   c.id = a.chat_id
   WHERE a.id = ?`, id)
 
-  return db.unmarshalActivityCenterNotificationRow(row)
+	return db.unmarshalActivityCenterNotificationRow(row)
 }
 
 func (db sqlitePersistence) ActivityCenterNotifications(currCursor string, limit uint64) (string, []*ActivityCenterNotification, error) {
@@ -585,13 +585,13 @@ func (db sqlitePersistence) AcceptActivityCenterNotifications(ids []types.HexByt
 }
 
 func (db sqlitePersistence) UpdateActivityCenterNotificationMessage(id types.HexBytes, message *common.Message) error {
-  encodedMessage, err := json.Marshal(message)
-		if err != nil {
-			return err
-		}
+	encodedMessage, err := json.Marshal(message)
+	if err != nil {
+		return err
+	}
 
-                _ , err   =           db.db.Exec(`UPDATE activity_center_notifications SET message = ? WHERE id = ?`, encodedMessage, id)
-  return err
+	_, err = db.db.Exec(`UPDATE activity_center_notifications SET message = ? WHERE id = ?`, encodedMessage, id)
+	return err
 
 }
 

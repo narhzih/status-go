@@ -3151,7 +3151,7 @@ func (r *ReceivedMessageState) addNewActivityCenterNotification(publicKey ecdsa.
 	return nil
 }
 
-func (m *Messenger) buildMessageState() *ReceivedMessageState{
+func (m *Messenger) buildMessageState() *ReceivedMessageState {
 	return &ReceivedMessageState{
 		AllChats:              m.allChats,
 		AllContacts:           m.allContacts,
@@ -3165,8 +3165,7 @@ func (m *Messenger) buildMessageState() *ReceivedMessageState{
 		Timesource:            m.getTimesource(),
 		AllBookmarks:          make(map[string]*browsers.Bookmark),
 	}
-      }
-
+}
 
 func (m *Messenger) handleRetrievedMessages(chatWithMessages map[transport.Filter][]*types.Message, storeWakuMessages bool) (*MessengerResponse, error) {
 
@@ -3174,7 +3173,7 @@ func (m *Messenger) handleRetrievedMessages(chatWithMessages map[transport.Filte
 	defer m.handleMessagesMutex.Unlock()
 
 	messageState := m.buildMessageState()
-        response := messageState.Response
+	response := messageState.Response
 
 	logger := m.logger.With(zap.String("site", "RetrieveAll"))
 
@@ -3633,7 +3632,7 @@ func (m *Messenger) handleRetrievedMessages(chatWithMessages map[transport.Filte
 							allMessagesProcessed = false
 							continue
 						}
-                                              case protobuf.AcceptContactRequest:
+					case protobuf.AcceptContactRequest:
 						logger.Debug("Handling AcceptContactRequest")
 						message := msg.ParsedMessage.Interface().(protobuf.AcceptContactRequest)
 						err = m.HandleAcceptContactRequest(messageState, message)
@@ -3642,7 +3641,7 @@ func (m *Messenger) handleRetrievedMessages(chatWithMessages map[transport.Filte
 							allMessagesProcessed = false
 							continue
 						}
-                                       case protobuf.RetractContactRequest:
+					case protobuf.RetractContactRequest:
 
 						logger.Debug("Handling RetractContactRequest")
 						message := msg.ParsedMessage.Interface().(protobuf.RetractContactRequest)
