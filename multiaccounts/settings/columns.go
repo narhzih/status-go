@@ -197,6 +197,11 @@ var (
 		dBColumnName:   "notifications_enabled",
 		valueHandler:   BoolHandler,
 	}
+	NotificationsSettings = SettingField{
+		reactFieldName: "notifications-settings",
+		dBColumnName:   "notifications_settings",
+		valueHandler:   JSONBlobHandler,
+	}
 	OpenseaEnabled = SettingField{
 		reactFieldName: "opensea-enabled?",
 		dBColumnName:   "opensea_enabled",
@@ -428,6 +433,7 @@ var (
 		NetworksNetworks,
 		NodeConfig,
 		NotificationsEnabled,
+		NotificationsSettings,
 		OpenseaEnabled,
 		PhotoPath,
 		PinnedMailservers,

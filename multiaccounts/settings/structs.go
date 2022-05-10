@@ -137,12 +137,13 @@ type Settings struct {
 	Name                      string           `json:"name,omitempty"`
 	Networks                  *json.RawMessage `json:"networks/networks"`
 	// NotificationsEnabled indicates whether local notifications should be enabled (android only)
-	NotificationsEnabled bool             `json:"notifications-enabled?,omitempty"`
-	PhotoPath            string           `json:"photo-path"`
-	PinnedMailserver     *json.RawMessage `json:"pinned-mailservers,omitempty"`
-	PreferredName        *string          `json:"preferred-name,omitempty"`
-	PreviewPrivacy       bool             `json:"preview-privacy?"`
-	PublicKey            string           `json:"public-key"`
+	NotificationsEnabled  bool             `json:"notifications-enabled?,omitempty"`
+	NotificationsSettings *json.RawMessage `json:"notifications-settings,omitempty"`
+	PhotoPath             string           `json:"photo-path"`
+	PinnedMailserver      *json.RawMessage `json:"pinned-mailservers,omitempty"`
+	PreferredName         *string          `json:"preferred-name,omitempty"`
+	PreviewPrivacy        bool             `json:"preview-privacy?"`
+	PublicKey             string           `json:"public-key"`
 	// PushNotificationsServerEnabled indicates whether we should be running a push notification server
 	PushNotificationsServerEnabled bool `json:"push-notifications-server-enabled?,omitempty"`
 	// PushNotificationsFromContactsOnly indicates whether we should only receive push notifications from contacts
