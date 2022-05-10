@@ -1025,29 +1025,6 @@ func (m *Messenger) HandleChatMessage(state *ReceivedMessageState) error {
 		return err // matchChatEntity returns a descriptive error message
 	}
 
-        /*
-	// Save ContactRequest if any
-	rawContactRequest := state.CurrentMessageState.Message.SentContactRequestSignature
-	if rawContactRequest != nil {
-		err = contactrequests.VerifySignature(rawContactRequest.Signature, &m.identity.PublicKey, state.CurrentMessageState.PublicKey, rawContactRequest.Timestamp)
-		if err != nil {
-			m.logger.Error("FAILED", zap.Error(err))
-			return err
-		}
-		contactRequest := &ContactRequest{
-			ContactKey: common.PubkeyToHex(&m.identity.PublicKey),
-			SigningKey: types.EncodeHex(crypto.FromECDSAPub(state.CurrentMessageState.PublicKey)),
-			Signature:  rawContactRequest.Signature,
-			Timestamp:  rawContactRequest.Timestamp,
-		}
-		err = m.persistence.SaveReceivedContactRequest(contactRequest)
-		if err != nil {
-			m.logger.Error("FAILED", zap.Error(err))
-			return err
-		}
-
-	}*/
-
 	if chat.ReadMessagesAtClockValue > state.CurrentMessageState.WhisperTimestamp {
 		receivedMessage.Seen = true
 	}

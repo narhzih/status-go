@@ -8,7 +8,6 @@ import (
 	"github.com/golang/protobuf/proto"
 
 	"github.com/status-im/status-go/protocol/common"
-	"github.com/status-im/status-go/protocol/contactrequests"
 	"github.com/status-im/status-go/protocol/protobuf"
 	"github.com/status-im/status-go/eth-node/types"
 	"github.com/status-im/status-go/protocol/requests"
@@ -66,14 +65,9 @@ func (m *Messenger) SendContactRequest(ctx context.Context, request *requests.Se
 	chatMessage := &common.Message{}
 	chatMessage.ChatId = chatID
 	chatMessage.Text = request.Message
-	timestamp := m.getTimesource().GetCurrentTime()
-	signature, err := contactrequests.BuildSignature(publicKey, m.identity, timestamp)
-	if err != nil {
-		return nil, err
-	}
-	chatMessage.SentContactRequestSignature = &protobuf.ContactRequestSignature{Signature: signature, Timestamp: timestamp}
 	chatMessage.ContentType = protobuf.ChatMessage_CONTACT_REQUEST
 	chatMessage.ContactRequestState = common.ContactRequestStatePending
+
 	messageResponse, err := m.sendChatMessage(ctx, chatMessage)
 	if err != nil {
 		return nil, err
